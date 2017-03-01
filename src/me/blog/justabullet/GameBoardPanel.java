@@ -112,7 +112,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
 		initBoard();
 	}
-
+ 
 	// adjusting game level
 	private void setResolution() {
 		// fix me later! it's lame :P"
