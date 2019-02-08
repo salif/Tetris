@@ -8,19 +8,23 @@ Fun & Simple Original tetris :D
 * `right` & `left` arrow keys: move a tetromino
 * `p` key: pause game / restart game
 
-### Screenshot of the game
+## Screenshot of the game
 
-- on Linux
+### on Linux
 
-![on linux](http://i.imgur.com/HHQELFe.png)
+![on linux](https://i.imgur.com/5zC5MkV.png)
 
-- on Window
+![on Linux](https://i.imgur.com/96jMEXf.png)
 
-![on window](http://i.imgur.com/YKPvNqy.png)
+### on Window
 
-### Mi comentario
+![on window](https://i.imgur.com/THAGnd7.png)
 
-I tried to write explanatory comments but my english is lame as hell.  
+![on Windows](https://i.imgur.com/zp9uXmk.png)
+
+## Mi comentario
+
+> I tried to write explanatory comments but my english is lame as hell.  
 But i hope it will be helpful to understand the code.  
 If you find any bug on the code, please send me a pull request.  
 Have a nice day :D  
