@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -15,7 +16,6 @@ import javax.swing.Timer;
 import com.salifm.tetris.Tetromino.Tetrominoes;
 
 public class GameBoardPanel extends JPanel implements ActionListener {
-    private static final long serialVersionUID = 6802492405004738658L;
     private static final int BoardWidth = 10;    // game board x size
     private static final int BoardHeight = 22;    // game board y size
 
@@ -82,15 +82,23 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 }
 
                 switch (keycode) {
+                    case 'a':
+                    case 'A':
                     case KeyEvent.VK_LEFT:
                         isMovable(curBlock, curX - 1, curY);
                         break;
+                    case 'd':
+                    case 'D':
                     case KeyEvent.VK_RIGHT:
                         isMovable(curBlock, curX + 1, curY);
                         break;
+                    case 'w':
+                    case 'W':
                     case KeyEvent.VK_UP:
                         isMovable(curBlock.rotateRight(), curX, curY);
                         break;
+                    case 's':
+                    case 'S':
                     case KeyEvent.VK_DOWN:
                         advanceOneLine();
                         break;
@@ -348,6 +356,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             curBlock.setShape(Tetrominoes.NO_BLOCK);
             timer.stop();
             isStarted = false;
+            DB(currentScore);
         }
     }
 
@@ -379,5 +388,45 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             --tempY;
         }
         tetrominoFixed();
+    }
+
+    private void DB(int dbScore) {
+        int maxScore = readDB();
+        if (dbScore > maxScore) {
+            writeDB(dbScore);
+            System.out.println("new max score: " + dbScore);
+        } else {
+            System.out.println("max score: " + maxScore);
+        }
+    }
+
+    private int readDB() {
+        try {
+            BufferedReader inputStream = new BufferedReader(new FileReader("Tetris.score"));
+            String dbMaxScore = inputStream.readLine();
+            inputStream.close();
+            return Integer.parseInt(dbMaxScore);
+        } catch (IOException e) {
+            return -1;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    private void writeDB(int dbScore) {
+        try {
+            File UIFile = new File("Tetris.score");
+            if (!UIFile.exists()) {
+                UIFile.createNewFile();
+            }
+            FileWriter filewriter = new FileWriter(UIFile.getAbsoluteFile());
+            BufferedWriter outputStream = new BufferedWriter(filewriter);
+            outputStream.write(String.valueOf(dbScore));
+            outputStream.newLine();
+            outputStream.write("This is database for Tetris game - https://github.com/salifm/Tetris");
+            outputStream.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

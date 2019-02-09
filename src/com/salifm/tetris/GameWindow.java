@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 
 public class GameWindow extends JFrame {
-    private static final long serialVersionUID = 8737819995837542594L;
 
     public GameWindow() {
         setTitle("Tetris :D");

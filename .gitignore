@@ -12,7 +12,6 @@
 hs_err_pid*
 
 .idea/
-
 Tetris.iml
-
 out/
+*.score
