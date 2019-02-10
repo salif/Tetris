@@ -12,6 +12,8 @@ import java.io.*;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.JOptionPane;
+import  javax.swing.UIManager;
 
 import com.salifm.tetris.Tetromino.Tetrominoes;
 
@@ -42,6 +44,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private String currentLevel;
     private int currentTimerResolution;
 
+    private GameWindow tetrisFrameD;
+
 
     public GameBoardPanel(GameWindow tetrisFrame, int timerResolution) {
 
@@ -56,19 +60,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
         // colour of tetrominoes
         colorTable = new Color[]{
-                new Color(0, 0, 0),  new Color(164, 135, 255),
+                new Color(0, 0, 0), new Color(164, 135, 255),
                 new Color(255, 128, 0), new Color(255, 0, 0),
-                new Color(32, 128, 255), new Color(255,0,255),
-                new Color(255, 255, 0),  new Color(0, 255, 0)
+                new Color(32, 128, 255), new Color(255, 0, 255),
+                new Color(255, 255, 0), new Color(0, 255, 0)
         };
-        /*
-        colorTable = new Color[]{
-                new Color(0, 0, 0), new Color(238, 64, 53),
-                new Color(243, 119, 54), new Color(255, 201, 14),
-                new Color(123, 192, 67), new Color(3, 146, 207),
-                new Color(235, 214, 135), new Color(164, 135, 235)
-        };
-        */
 
         // keyboard listener
         addKeyListener(new KeyAdapter() {
@@ -122,6 +118,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             }
         });
 
+        tetrisFrameD = tetrisFrame;
         initBoard();
     }
 
@@ -158,6 +155,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 currentTimerResolution = 340;
                 break;
             case 1:
+                currentTimerResolution = 370;
+                break;
+            case 0:
                 currentTimerResolution = 370;
                 break;
         }
@@ -364,7 +364,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             curBlock.setShape(Tetrominoes.NO_BLOCK);
             timer.stop();
             isStarted = false;
-            DB(currentScore);
+            GameOver(currentScore);
         }
     }
 
@@ -398,14 +398,19 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         tetrominoFixed();
     }
 
-    private void DB(int dbScore) {
+    private void GameOver(int dbScore) {
         int maxScore = readDB();
+        String showD = "";
         if (dbScore > maxScore) {
             writeDB(dbScore);
-            System.out.println("new max score: " + dbScore);
+            showD = String.format("%nCongratulations! %nNew max score: %d", dbScore);
         } else {
-            System.out.println("max score: " + maxScore);
+            showD = String.format("Score: %d %nMax score: %d", dbScore, maxScore);
         }
+        UIManager.put("OptionPane.okButtonText", "new game");
+        JOptionPane.showMessageDialog(null, showD, "Game Over!", JOptionPane.OK_OPTION);
+        setResolution();
+        start();
     }
 
     private int readDB() {
