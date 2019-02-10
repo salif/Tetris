@@ -56,11 +56,19 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
         // colour of tetrominoes
         colorTable = new Color[]{
+                new Color(0, 0, 0),  new Color(164, 135, 255),
+                new Color(255, 128, 0), new Color(255, 0, 0),
+                new Color(32, 128, 255), new Color(255,0,255),
+                new Color(255, 255, 0),  new Color(0, 255, 0)
+        };
+        /*
+        colorTable = new Color[]{
                 new Color(0, 0, 0), new Color(238, 64, 53),
                 new Color(243, 119, 54), new Color(255, 201, 14),
                 new Color(123, 192, 67), new Color(3, 146, 207),
                 new Color(235, 214, 135), new Color(164, 135, 235)
         };
+        */
 
         // keyboard listener
         addKeyListener(new KeyAdapter() {
