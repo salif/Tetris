@@ -1,4 +1,4 @@
-package com.salifm.tetris;
+package com.github.salif.tetris;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,18 +8,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.*;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.JOptionPane;
-import  javax.swing.UIManager;
 
-import com.salifm.tetris.Tetromino.Tetrominoes;
+import com.github.salif.tetris.Tetromino.Tetrominoes;
 
 public class GameBoardPanel extends JPanel implements ActionListener {
-    private static final int BoardWidth = 10;    // game board x size
-    private static final int BoardHeight = 22;    // game board y size
+    private static final long serialVersionUID = 6802492405004738658L;
+    private static final int BoardWidth = 10; // game board x size
+    private static final int BoardHeight = 22; // game board y size
 
     // game status & timer
     private Timer timer;
@@ -44,26 +43,27 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private String currentLevel;
     private int currentTimerResolution;
 
-    private GameWindow tetrisFrameD;
-
-
     public GameBoardPanel(GameWindow tetrisFrame, int timerResolution) {
 
         setFocusable(true);
         setBackground(new Color(0, 30, 30));
         curBlock = new Tetromino();
         timer = new Timer(timerResolution, this);
-        timer.start();    // activate timer
+        timer.start(); // activate timer
         currentTimerResolution = timerResolution;
 
         gameBoard = new Tetrominoes[BoardWidth * BoardHeight];
 
         // colour of tetrominoes
-        colorTable = new Color[]{
-                new Color(0, 0, 0), new Color(164, 135, 255),
-                new Color(255, 128, 0), new Color(255, 0, 0),
-                new Color(32, 128, 255), new Color(255, 0, 255),
-                new Color(255, 255, 0), new Color(0, 255, 0)
+        colorTable = new Color[] {
+                new Color(0, 0, 0),
+                new Color(164, 135, 255),
+                new Color(255, 128, 0),
+                new Color(255, 0, 0),
+                new Color(32, 128, 255),
+                new Color(255, 0, 255),
+                new Color(255, 255, 0),
+                new Color(0, 255, 0)
         };
 
         // keyboard listener
@@ -118,7 +118,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             }
         });
 
-        tetrisFrameD = tetrisFrame;
         initBoard();
     }
 
@@ -155,9 +154,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                 currentTimerResolution = 340;
                 break;
             case 1:
-                currentTimerResolution = 370;
-                break;
-            case 0:
                 currentTimerResolution = 370;
                 break;
         }
@@ -241,7 +237,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Consolas", Font.PLAIN, 28));
+        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 28));
         g.drawString(currentStatus, 15, 35);
         g.drawString(currentLevel, 15, 70);
 
@@ -258,7 +254,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             int x = curX + curBlock.getX(i);
             int y = tempY - curBlock.getY(i);
-            drawTetromino(g, 0 + x * blockWidth(), boardTop + (BoardHeight - y - 1) * blockHeight(), curBlock.getShape(),
+            drawTetromino(g, 0 + x * blockWidth(), boardTop + (BoardHeight - y - 1) * blockHeight(),
+                    curBlock.getShape(),
                     true);
         }
 
@@ -270,7 +267,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     drawTetromino(g, 0 + j * blockWidth(), boardTop + i * blockHeight(), shape, false);
             }
         }
-
 
         // rendering - current tetromino
         if (curBlock.getShape() != Tetrominoes.NO_BLOCK) {
@@ -364,7 +360,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             curBlock.setShape(Tetrominoes.NO_BLOCK);
             timer.stop();
             isStarted = false;
-            GameOver(currentScore);
+            gameOver(currentScore);
         }
     }
 
@@ -398,48 +394,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         tetrominoFixed();
     }
 
-    private void GameOver(int dbScore) {
-        int maxScore = readDB();
-        String showD = "";
-        if (dbScore > maxScore) {
-            writeDB(dbScore);
-            showD = String.format("%nCongratulations! %nNew max score: %d", dbScore);
-        } else {
-            showD = String.format("Score: %d %nMax score: %d", dbScore, maxScore);
-        }
-        UIManager.put("OptionPane.okButtonText", "new game");
-        JOptionPane.showMessageDialog(null, showD, "Game Over!", JOptionPane.OK_OPTION);
-        setResolution();
-        start();
+    private void gameOver(int score) {
+        JOptionPane.showMessageDialog(null, "", "Game Over!", JOptionPane.OK_OPTION);
     }
 
-    private int readDB() {
-        try {
-            BufferedReader inputStream = new BufferedReader(new FileReader("Tetris.score"));
-            String dbMaxScore = inputStream.readLine();
-            inputStream.close();
-            return Integer.parseInt(dbMaxScore);
-        } catch (IOException e) {
-            return -1;
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
-    private void writeDB(int dbScore) {
-        try {
-            File UIFile = new File("Tetris.score");
-            if (!UIFile.exists()) {
-                UIFile.createNewFile();
-            }
-            FileWriter filewriter = new FileWriter(UIFile.getAbsoluteFile());
-            BufferedWriter outputStream = new BufferedWriter(filewriter);
-            outputStream.write(String.valueOf(dbScore));
-            outputStream.newLine();
-            outputStream.write("This is database for Tetris game - https://github.com/salifm/Tetris");
-            outputStream.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 }

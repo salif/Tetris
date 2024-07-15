@@ -1,1 +1,9 @@
 theme: jekyll-theme-cayman
+
+title: "Tetris"
+description: "Fun & Simple Original tetris"
+show_downloads: false
+
+author:
+  name: Salif Mehmed
+  url: https://salif.eu
