@@ -29,6 +29,19 @@ application {
     mainClass = 'com.github.salif.tetris.App'
 }
 
+jar {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    manifest {
+        attributes(
+            'Main-Class': 'com.github.salif.tetris.App'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()

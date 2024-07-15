@@ -4,9 +4,8 @@ Fun & Simple Original tetris
 
 ## Download
 
-Download [Tetris.jar](https://github.com/salifm/Tetris/raw/master/out/Tetris.jar)
-
-See releases [on Github](https://github.com/salif/Tetris/releases).
+See the releases [on Github](https://github.com/salif/Tetris/releases) and
+download the Tetris.jar file from the latest release.
 
 ## How to play
 
