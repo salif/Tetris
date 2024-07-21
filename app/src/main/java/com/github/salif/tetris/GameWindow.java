@@ -1,26 +1,33 @@
 package com.github.salif.tetris;
 
 import java.awt.GridLayout;
+import java.util.ResourceBundle;
+
 import javax.swing.JFrame;
 
-public class GameWindow extends JFrame {
+public class GameWindow implements Runnable {
 
-    private static final long serialVersionUID = 8737819995837542594L;
+    private final JFrame mainFrame;
+    private final GameBoardPanel gameBoard;
 
-    public GameWindow() {
-        setTitle("Tetris :D");
-        setSize(400, 814);
-        setResizable(false);
+    public GameWindow(ResourceBundle m) {
+        this.mainFrame = new JFrame();
+        this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.mainFrame.setTitle(m.getString("title"));
+        this.mainFrame.setSize(400, 814);
+        this.mainFrame.setResizable(false);
 
-        setLayout(new GridLayout(1, 2));
+        this.mainFrame.setLayout(new GridLayout(1, 2));
 
         // you can adjust timer resolution here. but it's ideal value for this game.
-        GameBoardPanel gameBoard = new GameBoardPanel(this, 400);
-        add(gameBoard);
-        gameBoard.start();
+        this.gameBoard = new GameBoardPanel(this, m, 500);
+        this.mainFrame.add(gameBoard);
+    }
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
+    @Override
+    public void run() {
+        this.mainFrame.setLocationRelativeTo(null);
+        this.mainFrame.setVisible(true);
+        this.gameBoard.start();
     }
 }

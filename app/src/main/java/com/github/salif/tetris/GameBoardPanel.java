@@ -8,17 +8,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import com.github.salif.tetris.Tetromino.Tetrominoes;
-
 public class GameBoardPanel extends JPanel implements ActionListener {
+
     private static final long serialVersionUID = 6802492405004738658L;
-    private static final int BoardWidth = 10; // game board x size
-    private static final int BoardHeight = 22; // game board y size
+    private final int BoardWidth = 10; // game board x size
+    private final int BoardHeight = 22; // game board y size
 
     // game status & timer
     private Timer timer;
@@ -43,27 +43,29 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private String currentLevel;
     private int currentTimerResolution;
 
-    public GameBoardPanel(GameWindow tetrisFrame, int timerResolution) {
+    private final ResourceBundle m;
 
+    public GameBoardPanel(GameWindow tetrisFrame, ResourceBundle m, int timerResolution) {
         setFocusable(true);
         setBackground(new Color(0, 30, 30));
         curBlock = new Tetromino();
         timer = new Timer(timerResolution, this);
         timer.start(); // activate timer
         currentTimerResolution = timerResolution;
+        this.m = m;
 
         gameBoard = new Tetrominoes[BoardWidth * BoardHeight];
 
         // colour of tetrominoes
-        colorTable = new Color[] {
-                new Color(0, 0, 0),
-                new Color(164, 135, 255),
-                new Color(255, 128, 0),
-                new Color(255, 0, 0),
-                new Color(32, 128, 255),
-                new Color(255, 0, 255),
-                new Color(255, 255, 0),
-                new Color(0, 255, 0)
+        colorTable = new Color[]{
+            new Color(0, 0, 0),
+            new Color(164, 135, 255),
+            new Color(255, 128, 0),
+            new Color(255, 0, 0),
+            new Color(32, 128, 255),
+            new Color(255, 0, 255),
+            new Color(255, 255, 0),
+            new Color(0, 255, 0)
         };
 
         // keyboard listener
@@ -85,34 +87,20 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     return;
                 }
 
+                // Colemak
                 switch (keycode) {
-                    case 'a':
-                    case 'A':
-                    case KeyEvent.VK_LEFT:
+                    case 'a', 'A', KeyEvent.VK_LEFT ->
                         isMovable(curBlock, curX - 1, curY);
-                        break;
-                    case 'd':
-                    case 'D':
-                    case KeyEvent.VK_RIGHT:
+                    case 's', 'S', KeyEvent.VK_RIGHT ->
                         isMovable(curBlock, curX + 1, curY);
-                        break;
-                    case 'w':
-                    case 'W':
-                    case KeyEvent.VK_UP:
+                    case 'w', 'W', KeyEvent.VK_UP ->
                         isMovable(curBlock.rotateRight(), curX, curY);
-                        break;
-                    case 's':
-                    case 'S':
-                    case KeyEvent.VK_DOWN:
+                    case 'r', 'R', KeyEvent.VK_DOWN ->
                         advanceOneLine();
-                        break;
-                    case KeyEvent.VK_SPACE:
+                    case KeyEvent.VK_SPACE ->
                         advanceToEnd();
-                        break;
-                    case 'p':
-                    case 'P':
+                    case 'p', 'P' ->
                         pause();
-                        break;
                 }
 
             }
@@ -126,36 +114,26 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         // fix me later! it's lame :P"
 
         switch (currentScore / 10) {
-            case 10:
+            case 10 ->
                 currentTimerResolution = 100;
-                break;
-            case 9:
-                currentTimerResolution = 130;
-                break;
-            case 8:
-                currentTimerResolution = 160;
-                break;
-            case 7:
-                currentTimerResolution = 190;
-                break;
-            case 6:
+            case 9 ->
+                currentTimerResolution = 140;
+            case 8 ->
+                currentTimerResolution = 180;
+            case 7 ->
                 currentTimerResolution = 220;
-                break;
-            case 5:
-                currentTimerResolution = 250;
-                break;
-            case 4:
-                currentTimerResolution = 280;
-                break;
-            case 3:
-                currentTimerResolution = 310;
-                break;
-            case 2:
+            case 6 ->
+                currentTimerResolution = 260;
+            case 5 ->
+                currentTimerResolution = 300;
+            case 4 ->
                 currentTimerResolution = 340;
-                break;
-            case 1:
-                currentTimerResolution = 370;
-                break;
+            case 3 ->
+                currentTimerResolution = 380;
+            case 2 ->
+                currentTimerResolution = 420;
+            case 1 ->
+                currentTimerResolution = 460;
         }
 
         timer.setDelay(currentTimerResolution);
@@ -229,10 +207,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         super.paint(g);
 
         if (!isPaused) {
-            currentStatus = "Score: " + currentScore;
-            currentLevel = "Level: " + (currentScore / 10 + 1);
+            currentStatus = this.m.getString("score") + ": " + currentScore;
+            currentLevel = this.m.getString("level") + ": " + (currentScore / 10 + 1);
         } else {
-            currentStatus = "PAUSED";
+            currentStatus = this.m.getString("paused");
             currentLevel = "";
         }
 
@@ -247,8 +225,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         // rendering - shadow of tetromino
         int tempY = curY;
         while (tempY > 0) {
-            if (!atomIsMovable(curBlock, curX, tempY - 1, false))
+            if (!atomIsMovable(curBlock, curX, tempY - 1, false)) {
                 break;
+            }
             tempY--;
         }
         for (int i = 0; i < 4; i++) {
@@ -263,8 +242,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         for (int i = 0; i < BoardHeight; i++) {
             for (int j = 0; j < BoardWidth; j++) {
                 Tetrominoes shape = curTetrominoPos(j, BoardHeight - i - 1);
-                if (shape != Tetrominoes.NO_BLOCK)
+                if (shape != Tetrominoes.NO_BLOCK) {
                     drawTetromino(g, 0 + j * blockWidth(), boardTop + i * blockHeight(), shape, false);
+                }
             }
         }
 
@@ -308,8 +288,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             if (isFull) {
                 ++fullLines;
                 for (int k = i; k < BoardHeight - 1; k++) {
-                    for (int l = 0; l < BoardWidth; ++l)
+                    for (int l = 0; l < BoardWidth; ++l) {
                         gameBoard[(k * BoardWidth) + l] = curTetrominoPos(l, k + 1);
+                    }
                 }
             }
         }
@@ -330,8 +311,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             int x = chkX + chkBlock.getX(i);
             int y = chkY - chkBlock.getY(i);
-            if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight)
+            if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight) {
                 return false;
+            }
             if (curTetrominoPos(x, y) != Tetrominoes.NO_BLOCK) {
                 return false;
             }
@@ -360,7 +342,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             curBlock.setShape(Tetrominoes.NO_BLOCK);
             timer.stop();
             isStarted = false;
-            gameOver(currentScore);
+            gameOver();
         }
     }
 
@@ -387,15 +369,19 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private void advanceToEnd() {
         int tempY = curY;
         while (tempY > 0) {
-            if (!isMovable(curBlock, curX, tempY - 1))
+            if (!isMovable(curBlock, curX, tempY - 1)) {
                 break;
+            }
             --tempY;
         }
         tetrominoFixed();
     }
 
-    private void gameOver(int score) {
-        JOptionPane.showMessageDialog(null, "", "Game Over!", JOptionPane.OK_OPTION);
+    private void gameOver() {
+        int r = JOptionPane.showConfirmDialog(this, this.currentStatus + "\n" + this.currentLevel + "\n" + this.m.getString("restart"), this.m.getString("gameover"), JOptionPane.YES_NO_OPTION);
+        if (r == JOptionPane.YES_OPTION) {
+            start();
+        }
     }
 
 }

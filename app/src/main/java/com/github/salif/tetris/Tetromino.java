@@ -3,37 +3,32 @@ package com.github.salif.tetris;
 import java.util.Random;
 
 public class Tetromino {
-    enum Tetrominoes {
-        NO_BLOCK, Z_SHAPE, S_SHAPE, I_SHAPE, T_SHAPE, O_SHAPE, L_SHAPE, J_SHAPE
-    };
 
     private Tetrominoes tetrominoes;
-    private int coords[][]; // current shape of a tetromino
-    private int tetrominoTable[][][];
+    private final int coords[][]; // current shape of a tetromino
+    private final int tetrominoTable[][][];
 
     public Tetromino() {
         coords = new int[4][2];
-        tetrominoTable = new int[][][] {
-                { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } }, // NO_BLOCK
-                { { 0, -1 }, { 0, 0 }, { -1, 0 }, { -1, 1 } }, // Z_SHAPE
-                { { 0, -1 }, { 0, 0 }, { 1, 0 }, { 1, 1 } }, // S_SHAPE
-                { { 0, -1 }, { 0, 0 }, { 0, 1 }, { 0, 2 } }, // I_SHAPE
-                { { -1, 0 }, { 0, 0 }, { 1, 0 }, { 0, 1 } }, // T_SHAPE
-                { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } }, // O_SHAPE
-                { { -1, -1 }, { 0, -1 }, { 0, 0 }, { 0, 1 } }, // L_SHAPE
-                { { 1, -1 }, { 0, -1 }, { 0, 0 }, { 0, 1 } } // J_SHAPE
+        tetrominoTable = new int[][][]{
+            {{0, 0}, {0, 0}, {0, 0}, {0, 0}}, // NO_BLOCK
+            {{0, -1}, {0, 0}, {-1, 0}, {-1, 1}}, // Z_SHAPE
+            {{0, -1}, {0, 0}, {1, 0}, {1, 1}}, // S_SHAPE
+            {{0, -1}, {0, 0}, {0, 1}, {0, 2}}, // I_SHAPE
+            {{-1, 0}, {0, 0}, {1, 0}, {0, 1}}, // T_SHAPE
+            {{0, 0}, {1, 0}, {0, 1}, {1, 1}}, // O_SHAPE
+            {{-1, -1}, {0, -1}, {0, 0}, {0, 1}}, // L_SHAPE
+            {{1, -1}, {0, -1}, {0, 0}, {0, 1}} // J_SHAPE
         };
 
         setShape(Tetrominoes.NO_BLOCK);
     }
 
     // set tetromino shape
-    public void setShape(Tetrominoes tetromino) {
+    final void setShape(Tetrominoes tetromino) {
 
         for (int i = 0; i < coords.length; i++) {
-            for (int j = 0; j < coords[i].length; j++) {
-                coords[i][j] = tetrominoTable[tetromino.ordinal()][i][j];
-            }
+            System.arraycopy(tetrominoTable[tetromino.ordinal()][i], 0, coords[i], 0, coords[i].length);
         }
 
         tetrominoes = tetromino;
@@ -68,16 +63,16 @@ public class Tetromino {
 
     public int minX() {
         int ret = 0;
-        for (int i = 0; i < coords.length; i++) {
-            ret = Math.min(ret, coords[i][0]);
+        for (int[] coord : coords) {
+            ret = Math.min(ret, coord[0]);
         }
         return ret;
     }
 
     public int minY() {
         int ret = 0;
-        for (int i = 0; i < coords.length; i++) {
-            ret = Math.min(ret, coords[i][1]);
+        for (int[] coord : coords) {
+            ret = Math.min(ret, coord[1]);
         }
         return ret;
     }
